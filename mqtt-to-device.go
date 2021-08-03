@@ -2,12 +2,13 @@ package main
 
 import (
 	"encoding/json"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
-	log "github.com/sirupsen/logrus"
-	"go.bug.st/serial"
 	"strings"
 	"sync"
 	"time"
+
+	mqtt "github.com/eclipse/paho.mqtt.golang"
+	log "github.com/sirupsen/logrus"
+	"go.bug.st/serial"
 )
 
 func mqttToDevice(serialPort serial.Port, client mqtt.Client, topic string) {
@@ -22,7 +23,7 @@ func mqttToDevice(serialPort serial.Port, client mqtt.Client, topic string) {
 			"topic": topic,
 		}).Trace("message received from mqtt")
 
-		if serialMessage.Command == "" || serialMessage.Value == "" {
+		if serialMessage.Command == "" {
 			log.WithField("json", jsonString).Debug("tried to send unsupported command to device")
 			return
 		}
@@ -49,10 +50,14 @@ func jsonToSerialMessage(jsonString string) SerialMessage {
 		serialMessage = writePower(jsonMessage)
 	case "volume":
 		serialMessage = writeVolume(jsonMessage)
+	case "volumeLegacy":
+		serialMessage = writeVolumeLegacy(jsonMessage)
 	case "mute":
 		serialMessage = writeMute(jsonMessage)
 	case "source":
 		serialMessage = writeSource(jsonMessage)
+	case "Speakera", "Speakerb":
+		serialMessage = writeSpeaker(jsonMessage)
 	}
 
 	return serialMessage
@@ -63,7 +68,10 @@ func sendCommand(port serial.Port, message SerialMessage, mutex *sync.Mutex) {
 	defer mutex.Unlock()
 
 	// Format the command for the serial port
-	command := strings.Join([]string{message.Command, message.Value}, "=")
+	command := message.Command
+	if message.Value != "" {
+		command = strings.Join([]string{message.Command, message.Value}, "=")
+	}
 	command = strings.Join([]string{"\r", "Main.", command, "\r\n"}, "")
 
 	log.WithField("command", command).Debug("sending command to device")

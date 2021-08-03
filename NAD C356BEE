@@ -1,0 +1,48 @@
+Poweron
+
+mosquitto_pub -h 127.0.0.1 -m '{"command": "power", "value": "1"}' -t "nadi"
+
+Poweroff
+
+mosquitto_pub -h 127.0.0.1 -m '{"command": "power", "value": "0"}' -t "nadi"
+
+
+
+Set Source
+
+mosquitto_pub -h 127.0.0.1 -m '{"command": "source", "value": "TAPE2"}' -t "nadi"
+
+Possible Values
+
+MP
+CD
+TUNER
+DISC/MDC
+AUX
+TAPE2
+
+
+Set Speaker
+
+Speaker A
+
+mosquitto_pub -h 127.0.0.1 -m '{"command": "Speakera", "value": "1"}' -t "nadi"
+mosquitto_pub -h 127.0.0.1 -m '{"command": "Speakera", "value": "0"}' -t "nadi"
+
+Speaker B
+mosquitto_pub -h 127.0.0.1 -m '{"command": "Speakerb", "value": "1"}' -t "nadi"
+mosquitto_pub -h 127.0.0.1 -m '{"command": "Speakerb", "value": "0"}' -t "nadi"
+
+
+Mute
+
+mosquitto_pub -h 127.0.0.1 -m '{"command": "mute", "value": "1"}' -t "nadi"
+mosquitto_pub -h 127.0.0.1 -m '{"command": "mute", "value": "0"}' -t "nadi"
+
+
+Volume
+Up
+mosquitto_pub -h 127.0.0.1 -m '{"command": "volumeLegacy", "value": "+"}' -t "nadi"
+
+Down
+mosquitto_pub -h 127.0.0.1 -m '{"command": "volumeLegacy", "value": "-"}' -t "nadi"

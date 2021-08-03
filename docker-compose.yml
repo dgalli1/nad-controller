@@ -1,0 +1,9 @@
+version: '3.3'
+services:
+    eclipse-mosquitto:
+        ports:
+            - '127.0.0.1:1883:1883'
+            - '127.0.0.1:9001:9001'
+        volumes:
+            - './mosquitto:/mosquitto'
+        image: eclipse-mosquitto
