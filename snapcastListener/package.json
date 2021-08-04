@@ -1,0 +1,19 @@
+{
+  "name": "snapcastlistener",
+  "version": "1.0.0",
+  "description": "",
+  "main": "listener.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mqtt": "^4.2.8",
+    "ws": "^8.0.0"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.3"
+  }
+}

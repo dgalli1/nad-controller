@@ -46,3 +46,5 @@ mosquitto_pub -h 127.0.0.1 -m '{"command": "volumeLegacy", "value": "+"}' -t "na
 
 Down
 mosquitto_pub -h 127.0.0.1 -m '{"command": "volumeLegacy", "value": "-"}' -t "nadi"
+
+50 Steps

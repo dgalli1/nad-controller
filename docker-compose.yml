@@ -7,3 +7,9 @@ services:
         volumes:
             - './mosquitto:/mosquitto'
         image: eclipse-mosquitto
+    snapclient:
+        devices:
+            - /dev/snd
+        environment:
+            - HOST=192.168.178.66
+        image: ivdata/snapclient
