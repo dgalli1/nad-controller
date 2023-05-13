@@ -3,9 +3,7 @@ package main
 import (
 	"bufio"
 	"flag"
-	"time"
 
-	mqtt "github.com/eclipse/paho.mqtt.golang"
 	filename "github.com/keepeye/logrus-filename"
 	log "github.com/sirupsen/logrus"
 	"go.bug.st/serial"
@@ -53,9 +51,8 @@ func main() {
 	}
 
 	serialPort := openSerialPort(*serialPortAddress)
-	mqttClient := startMQTT(*brokerAddress)
-
-	go mqttToDevice(serialPort, mqttClient, *inputTopic)
+	go mqttToDevice(serialPort, *brokerAddress, *inputTopic)
+	mqttClient := <-MqttChannel
 	go deviceToMqtt(bufio.NewReader(serialPort), mqttClient, *outputTopic)
 	select {}
 }
@@ -72,29 +69,4 @@ func openSerialPort(serialPort string) serial.Port {
 	log.WithField("serial-port", serialPort).Info("opened serial connection")
 
 	return port
-}
-
-func startMQTT(address string) mqtt.Client {
-	clientOptions := mqtt.NewClientOptions().AddBroker(address)
-	clientOptions.SetConnectionLostHandler(func(client mqtt.Client, err error) {
-		log.WithField("broker", address).Warnf("connection lost to mqtt broker: %v", err)
-		for {
-			time.Sleep(5 * time.Second)
-			if token := client.Connect(); token.Wait() && token.Error() == nil {
-				log.WithField("broker", address).Info("reconnected to mqtt broker")
-				break
-			} else {
-				log.WithField("broker", address).Warnf("failed to reconnect to mqtt broker: %v", token.Error())
-			}
-		}
-	})
-	client := mqtt.NewClient(clientOptions)
-
-	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		log.Fatal(token.Error())
-	}
-
-	log.WithField("broker", address).Info("connected to mqtt broker")
-
-	return client
 }
